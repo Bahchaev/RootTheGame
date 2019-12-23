@@ -155,7 +155,14 @@ fractionList.forEach(function (fraction) {
 function showList(phrase, list) {
     console.log(phrase);
     list.forEach(function (fraction) {
-        console.log(` - ${fraction}`)
+        //console.log(` - ${fraction}`)
+
+        if (Array.isArray(fraction)) {
+            console.log(` - ${fraction.join(": ")}`)
+        } else {
+            console.log(` - ${fraction}`)
+        }
+
     });
 }
 
@@ -265,7 +272,6 @@ function getFractionListForRandomization() {
 //получение сочетаний из массива array размерностью size
 function Combinations(array, size) {
     let N = array.length;
-    listOfFractionSet = [];
 
     function generateCombinations(arr) {
         if (arr == null) {
@@ -287,16 +293,26 @@ function Combinations(array, size) {
 
     let arr = null;
     let i = 1;
-    listOfFractionSet = new Map();
+    let mapOfFractionSet = new Map();
 
     while ((arr = generateCombinations(arr)) != null) {
         let result = [];
+        let resultWeight = wannaPlayFractionsWeight;
+
         arr.forEach(function (key) {
-            result.push(array[key])
+            result.push(array[key].fullName);
+            resultWeight += array[key].weight
         });
-        listOfFractionSet.set()
-        i++
+
+        //result.push(resultWeight);
+        result = wannaPlayFractions.concat(result);
+
+        if (resultWeight >= fractionMinWeight) {
+            mapOfFractionSet.set(i, result);
+            i++
+        }
     }
+    return mapOfFractionSet
 }
 
 //создадим список с комбинациями фракций
@@ -315,28 +331,60 @@ function getListOfFractionSet() {
     });
 
     let neededPlayersNumber = playersNumbers - wannaPlayFractions.length; //сколько фракций нужно добрать с учетом количества желаемых фракций
-    //console.log(arr)
-    console.log(neededPlayersNumber);
 
-    Combinations(fractionListForRandomization, neededPlayersNumber)
+    listOfFractionSet = Combinations(arr, neededPlayersNumber);
 }
 
-//Настройки игры:
-setPlayersNumbers(5);
-console.log(`Количетсво игроков: ${playersNumbers}, Минимальный общий вес фракций: ${fractionMinWeight}`);
+function choiceFractionSet(N) {
+    if (N > listOfFractionSet.size) {
+        console.log(`Не правильный номер набора. Пожалуйста, введите цифру от 1 до ${listOfFractionSet.size}`)
+    } else {
+        console.log(`Вы выбрали следующий набор фракций: ${listOfFractionSet.get(N).join(', ')}`);
+        console.log(`Великий рандом распределил вас следующим образом:`);
+        let arr = shuffle(listOfFractionSet.get(N));
+        for (let i = 0; i < playersNumbers; i++) {
+            console.log(`Игрок №${i+1}: фракция "${arr[i]}"`)
+        }
+    }
 
-deleteFractions(`Вороны`);
-//showList(`Удалённые фракции: `, deletedFractions);
-//showList(`Оставшиеся фракции: `, nonDeletedFractions);
+}
 
-getWannaPlayFractions(`Коты`, `Вороны`, `Кроты`);
-//showList(`Желаемые фракции: `, wannaPlayFractions);
+function getRandomGame(N){
+    setPlayersNumbers(N);
+    deletedFractions = []; // фракции, которыми не хотим играть
+    wannaPlayFractions = []; // желаемые фракции
+    getFractionListForRandomization();
+    console.log(`Великий рандом распределил вас следующим образом:`);
+    let arr = shuffle(fractionListForRandomization);
+    for (let i = 0; i < playersNumbers; i++) {
+        console.log(`Игрок №${i+1}: фракция "${arr[i]}"`)
+    }
+}
 
-getFractionListForRandomization();
-showList(`Список фракция для рандомизации: `, fractionListForRandomization);
+//Ручные настройки игры игры:
+function getSettingGame (){
+    setPlayersNumbers(3);
+    console.log(`Количетсво игроков: ${playersNumbers}, Минимальный общий вес фракций: ${fractionMinWeight}`);
 
-getListOfFractionSet();
-showList(`Список фракций на выбор: `, listOfFractionSet);
+    deleteFractions(`Вороны`);
+    showList(`Удалённые фракции: `, deletedFractions);
+    showList(`Оставшиеся фракции: `, nonDeletedFractions);
+
+    getWannaPlayFractions(`Коты`, `Вороны`);
+    showList(`Желаемые фракции: `, wannaPlayFractions);
+
+    getFractionListForRandomization();
+    showList(`Список фракция для рандомизации: `, fractionListForRandomization);
+
+    getListOfFractionSet();
+    showList(`Выберите набор фракций: `, Array.from(listOfFractionSet.entries()));
+
+    choiceFractionSet(20)
+}
+
+//Рандом игра на N человек
+getRandomGame(5);
+
 
 
 
