@@ -144,6 +144,7 @@ let wannaPlayFractions = []; // желаемые фракции
 let wannaPlayFractionsWeight = 0; // вес желаемых фракций
 let nonDeletedFractions = []; //выбранные для игры фракции
 let fractionListForRandomization = [];
+let listOfFractionSet = [];
 
 //заполним список оставшихся фракций
 fractionList.forEach(function (fraction) {
@@ -166,8 +167,8 @@ function setPlayersNumbers(N) {
 
 //какими фракциями НЕ хотим играть? Удалим нежделательные фракции из списка
 function deleteFractions(...fractions) {
-    deletedFractions = [];
 
+    deletedFractions = [];
     fractions.forEach(function (key) {
         fractionList.forEach(function (fraction) {
             if (key === fraction.name || key === fraction.fullName) {
@@ -193,20 +194,24 @@ function getWannaPlayFractions(...fractions) {
     if (fractions.length > playersNumbers) {
         return console.log(`Количество желаемых фракций больше чем количество игроков`)
     }
-    fractions.forEach(function (fraction) {
 
+    fractions.forEach(function (fraction) {
         fractionList.forEach(function (key) {
             if (key.fullName === fraction || key.name === fraction) {
-                wannaPlayFractions.push(key.fullName);
-                wannaPlayFractionsWeight += key.weight
+
+                if (deletedFractions.includes(key.fullName)) {
+                    console.log(`Желаемая фракция "${fraction}" находится в списке удалённых фракций`);
+                } else {
+                    wannaPlayFractions.push(key.fullName);
+                    wannaPlayFractionsWeight += key.weight
+                }
             }
         });
-
-        if (deletedFractions.includes(fraction)) {
-            console.log(`Желаемая фракция "${fraction}" находится в списке удалённых фракций`);
-            wannaPlayFractions.pop(fraction)
-        }
     });
+
+    if (wannaPlayFractions.includes(`Бродяга (второй)`) && !wannaPlayFractions.includes(`Бродяга (первый)`)) {
+        wannaPlayFractions[wannaPlayFractions.indexOf(`Бродяга (второй)`)] = `Бродяга (первый)`
+    }
 }
 
 //тасование Фишера-Йетса (тру перетасовка для массивов).
@@ -236,7 +241,7 @@ function getFullWeight(list) {
     return wannaPlayWeight
 }
 
-//получение массива объектов фракций со свойствами fullName и weight для рандомизации
+//получение массива объектов для рандомизации
 function getFractionListForRandomization() {
     fractionListForRandomization = [];
     nonDeletedFractions.forEach(function (nonDeletedFraction) {
@@ -245,6 +250,57 @@ function getFractionListForRandomization() {
         }
     });
 
+    //проверка на двух енотов (если нет первого енота, но есть второй, то второй енот становится первым)
+    //если есть оба енота, но свободных слотов - 1, то второй енот удаляется из списка
+    if (fractionListForRandomization.includes(`Бродяга (второй)`)) {
+        if (!fractionListForRandomization.includes(`Бродяга (первый)`)) {
+            fractionListForRandomization[fractionListForRandomization.indexOf(`Бродяга (второй)`)] = `Бродяга (первый)`
+        }
+        if (fractionListForRandomization.includes(`Бродяга (первый)`) && playersNumbers - wannaPlayFractions.length <= 1) {
+            fractionListForRandomization.splice(fractionListForRandomization.indexOf(`Бродяга (второй)`), 1)
+        }
+    }
+}
+
+//получение сочетаний из массива array размерностью size
+function Combinations(array, size) {
+    let N = array.length;
+    listOfFractionSet = [];
+
+    function generateCombinations(arr) {
+        if (arr == null) {
+            arr = new Array(size);
+            for (let i = 0; i < size; i++) {
+                arr[i] = i;
+            }
+            return arr;
+        }
+        for (let i = size - 1; i >= 0; i--)
+            if (arr[i] < N - size + i) {
+                arr[i]++;
+                for (let j = i; j < size - 1; j++)
+                    arr[j + 1] = arr[j] + 1;
+                return arr;
+            }
+        return null;
+    }
+
+    let arr = null;
+    let i = 1;
+    listOfFractionSet = new Map();
+
+    while ((arr = generateCombinations(arr)) != null) {
+        let result = [];
+        arr.forEach(function (key) {
+            result.push(array[key])
+        });
+        listOfFractionSet.set()
+        i++
+    }
+}
+
+//создадим список с комбинациями фракций
+function getListOfFractionSet() {
     // создадим массив объектов со свойствами fullName и weight из массива fractionListForRandomization
     let arr = [];
     fractionList.forEach(function (fraction) {
@@ -257,55 +313,31 @@ function getFractionListForRandomization() {
             }
         })
     });
-    return arr
-}
 
-//создадим массив с комбинациями фракций
-function showVariantsOfFractionSet() {
-    let arr = getFractionListForRandomization();
     let neededPlayersNumber = playersNumbers - wannaPlayFractions.length; //сколько фракций нужно добрать с учетом количества желаемых фракций
+    //console.log(arr)
+    console.log(neededPlayersNumber);
 
-    if (neededPlayersNumber > 0) {
-        while (arr.length > 0) {
-
-            for (let i = neededPlayersNumber - 1; i <= arr.length - 1; i++) {
-                let sum = wannaPlayFractionsWeight;
-                let variants = [];
-
-                for (let j = 0; j < neededPlayersNumber - 1; j++) {
-                    sum += arr[j].weight;
-                    variants.push(arr[j].fullName)
-                }
-
-                sum += arr[i].weight;
-
-                if (sum >= fractionMinWeight) {
-                    variants.push(arr[i].fullName);
-                    variants = variants.concat(wannaPlayFractions);
-                    console.log(`${variants.join(', ')} ---- вес: ${sum}`);
-                }
-            }
-            arr.shift()
-        }
-    }
+    Combinations(fractionListForRandomization, neededPlayersNumber)
 }
-
 
 //Настройки игры:
-setPlayersNumbers(4);
-deleteFractions(`Енот`, `Енот 2`);
-//getWannaPlayFractions(`Коты`, `Бродяга (первый)`);
-//getFractionListForRandomization();
-
-
-//Вывод информации в консоль
+setPlayersNumbers(5);
 console.log(`Количетсво игроков: ${playersNumbers}, Минимальный общий вес фракций: ${fractionMinWeight}`);
+
+deleteFractions(`Вороны`);
 //showList(`Удалённые фракции: `, deletedFractions);
 //showList(`Оставшиеся фракции: `, nonDeletedFractions);
-//showList(`Желаемые фракции: `, wannaPlayFractions);
-//showList(`Список фракция для рандомизации: `, fractionListForRandomization);
 
-showVariantsOfFractionSet();
+getWannaPlayFractions(`Коты`, `Вороны`, `Кроты`);
+//showList(`Желаемые фракции: `, wannaPlayFractions);
+
+getFractionListForRandomization();
+showList(`Список фракция для рандомизации: `, fractionListForRandomization);
+
+getListOfFractionSet();
+showList(`Список фракций на выбор: `, listOfFractionSet);
+
 
 
 
