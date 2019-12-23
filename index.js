@@ -383,7 +383,7 @@ function getSettingGame (){
 }
 
 //Рандом игра на N человек
-getRandomGame(5);
+getRandomGame(4);
 
 
 
