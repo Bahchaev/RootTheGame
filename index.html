@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Root. Fraction randomization</title>
+</head>
+
+<body>
+<script>
+    document.writeln("<table id='mainTable'>");
+    for (let i = 0; i < 5; i++) {
+        document.writeln("<tr>");
+        for (let j = 0; j < 5; j++) {
+            document.writeln(`<td>${i}:${j}</td>`)
+        }
+        document.writeln("</tr>");
+    }
+    document.writeln("</table>");
+</script>
+
+<script>
+    let table = document.getElementById(`mainTable`);
+    for (let i = 0; i < table.rows.length; i++){
+        let row = table.rows[i];
+        row.cells[i].style.background = `red`
+    }
+</script>
+
+</body>
+</html>
