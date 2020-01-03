@@ -1,88 +1,4 @@
-/*
-Дано:
-* В игру играют N человек, 2 <= N <=6
-* В игре есть M фракций (см. таблицу. Но она мб будет расширяться при дополнениях)
-* Нам нужно сгенерировать случайно комбинации "игрок-фракция" так, чтобы суммарный "вес" соответствовал ограничению.
-
-Варианты использования (частные случаи):
-1. нас пятеро, выдай нам случайную партию
-2. нас четверо и мы не хотим играть енотом, какие варианты игры возможны? (увидели возможные комбинации), Окей, выбираем (вот этот), распредели среди нас эти фракции
-3. Не хотим играть без кошек, или с более чем одним енотом
- */
-
-/*const fractionWeightList = new Map([
-    [`Маркиза де Коте`, 10],
-    [`Подземное герцогство`, 8],
-    [`Крылатая династия`, 7],
-    [`Бродяга (первый)`, 5],
-    [`Речное братство`, 5],
-    [`Лесной союз`, 3],
-    [`Вороний заговор`, 3],
-    [`Бродяга (второй)`, 2],
-    [`Культ пресмыкающихся`, 2]
-]);
-
-const playersWeight = new Map([
-    [2, 17],
-    [3, 18],
-    [4, 21],
-    [5, 25],
-    [6, 28]
-]);
-
-let playersNumbers; // количество игроков
-let fractionMinWeight; // минимальный общий вес фракций
-let deletedFractions; // фракции, которыми не хотим играть
-let fractionForGame = [];
-
-//задайте количество игроков
-function setPlayersNumbers(N) {
-    playersNumbers = N;
-    fractionMinWeight = playersWeight.get(playersNumbers);
-    console.log(`Количетсво игроков: ${playersNumbers}, Минимальный общий вес фракций: ${fractionMinWeight}`);
-    console.log(`----------------------------------------------------------`)
-}
-
-//какими фракциями не хотим играть? Удалим нежделательные фракции из списка
-function deleteFractions(...fractions) {
-    fractions.forEach(function (key) {
-        fractionWeightList.delete(key)
-    });
-
-    deletedFractions = fractions;
-    console.log(`Удалим фракции: ${deletedFractions} `);
-
-    console.log(`Оствшаеся фракции: `);
-    for (let fraction of fractionWeightList.keys()) {
-        console.log(fraction)
-    }
-    console.log(`----------------------------------------------------------`)
-}
-
-function wannaPlayFractions(...fractions) {
-    if (fractions.length > playersNumbers) {
-        return console.log(`Количество фракций больше чем количество игроков`)
-    }
-    fractions.forEach(function (key) {
-        fractionForGame.push(key);
-        if (deletedFractions.includes(key)) {
-            console.log(`фракция "${key}" находится в списке удалённых фракций`);
-            fractionForGame.pop(key)
-        }
-    });
-    console.log(`----------------------------------------------------------`)
-}
-
-function getRandomFractions() {
-    console.log(`Список фракция для игры: ${fractionForGame}`)
-}
-
-setPlayersNumbers(3);
-deleteFractions(`Бродяга (второй)`, `Лесной союз`, `Культ пресмыкающихся`);
-wannaPlayFractions(`Маркиза де Коте`, `Бродяга (первый)`);
-getRandomFractions();*/
-
-
+const Combinatorics = require('js-combinatorics');
 const fractionList = [
     {
         fullName: `Маркиза де Коте`,
@@ -142,14 +58,11 @@ let fractionMinWeight; // минимальный общий вес фракци�
 let deletedFractions = []; // фракции, которыми не хотим играть
 let wannaPlayFractions = []; // желаемые фракции
 let wannaPlayFractionsWeight = 0; // вес желаемых фракций
-let nonDeletedFractions = []; //выбранные для игры фракции
 let fractionListForRandomization = [];
 let listOfFractionSet = [];
 
-//заполним список оставшихся фракций
-fractionList.forEach(function (fraction) {
-    nonDeletedFractions.push(fraction.fullName)
-});
+//содадим список оставшихся фракций
+let nonDeletedFractions = fractionList.map(fraction => fraction.fullName);
 
 //вывод список фракций из списка list
 function showList(phrase, list) {
@@ -173,24 +86,22 @@ function setPlayersNumbers(N) {
 }
 
 //какими фракциями НЕ хотим играть? Удалим нежделательные фракции из списка
-function deleteFractions(...fractions) {
+function deleteFractions(...deletedFractionKeys) {
 
-    deletedFractions = [];
-    fractions.forEach(function (key) {
-        fractionList.forEach(function (fraction) {
-            if (key === fraction.name || key === fraction.fullName) {
-                deletedFractions.push(fraction.fullName);
-            }
-        })
-    });
+    //функция проверка на удалённость
+    const isDeleted = (fraction) => deletedFractionKeys.find(
+        (key) => (key === fraction.name || key === fraction.fullName)
+    ) !== undefined;
+
+    //сформируем лист удалённых фракций
+    deletedFractions = fractionList
+        .filter((fraction) => isDeleted(fraction))
+        .map((fraction) => fraction.fullName);
 
     //сформируем лист оставшихся фракций
-    nonDeletedFractions = [];
-    fractionList.forEach(function (fraction) {
-        if (!deletedFractions.includes(fraction.fullName)) {
-            nonDeletedFractions.push(fraction.fullName)
-        }
-    });
+    nonDeletedFractions = fractionList
+        .filter((fraction) => !isDeleted(fraction))
+        .map((fraction) => fraction.fullName);
 }
 
 //какими фракциями хотим играть обязательно?
@@ -223,39 +134,20 @@ function getWannaPlayFractions(...fractions) {
 
 //тасование Фишера-Йетса (тру перетасовка для массивов).
 function shuffle(arr) {
+    let result = arr.concat();
     let j, temp;
-    for (let i = arr.length - 1; i > 0; i--) {
+    for (let i = result.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
-        temp = arr[j];
-        arr[j] = arr[i];
-        arr[i] = temp;
+        temp = result[j];
+        result[j] = result[i];
+        result[i] = temp;
     }
-    return arr;
-}
-
-//подсчет веса списка List
-function getFullWeight(list) {
-    let wannaPlayWeight = 0;
-
-    list.forEach(function (fraction) {
-        fractionList.forEach(function (key) {
-            if (key.fullName === fraction) {
-                wannaPlayWeight += key.weight;
-            }
-        })
-    });
-
-    return wannaPlayWeight
+    return result;
 }
 
 //получение массива объектов для рандомизации
 function getFractionListForRandomization() {
-    fractionListForRandomization = [];
-    nonDeletedFractions.forEach(function (nonDeletedFraction) {
-        if (wannaPlayFractions.length === 0 || !wannaPlayFractions.includes(nonDeletedFraction)) {
-            fractionListForRandomization.push(nonDeletedFraction)
-        }
-    });
+    fractionListForRandomization = nonDeletedFractions.filter((fraction) => !wannaPlayFractions.includes(fraction));
 
     //проверка на двух енотов (если нет первого енота, но есть второй, то второй енот становится первым)
     //если есть оба енота, но свободных слотов - 1, то второй енот удаляется из списка
@@ -315,6 +207,14 @@ function Combinations(array, size) {
     return mapOfFractionSet
 }
 
+function calculateCombinations(array, size) {
+    let arr =[];
+    let a;
+    const combination = Combinatorics.combination(array, size);
+    while (a = combination.next()) arr.push(a);
+    return arr
+}
+
 //создадим список с комбинациями фракций
 function getListOfFractionSet() {
     // создадим массив объектов со свойствами fullName и weight из массива fractionListForRandomization
@@ -343,13 +243,13 @@ function choiceFractionSet(N) {
         console.log(`Великий рандом распределил вас следующим образом:`);
         let arr = shuffle(listOfFractionSet.get(N));
         for (let i = 0; i < playersNumbers; i++) {
-            console.log(`Игрок №${i+1}: фракция "${arr[i]}"`)
+            console.log(`Игрок №${i + 1}: фракция "${arr[i]}"`)
         }
     }
 
 }
 
-function getRandomGame(N){
+function getRandomGame(N) {
     setPlayersNumbers(N);
     deletedFractions = []; // фракции, которыми не хотим играть
     wannaPlayFractions = []; // желаемые фракции
@@ -357,12 +257,12 @@ function getRandomGame(N){
     console.log(`Великий рандом распределил вас следующим образом:`);
     let arr = shuffle(fractionListForRandomization);
     for (let i = 0; i < playersNumbers; i++) {
-        console.log(`Игрок №${i+1}: фракция "${arr[i]}"`)
+        console.log(`Игрок №${i + 1}: фракция "${arr[i]}"`)
     }
 }
 
 //Ручные настройки игры игры:
-function getSettingGame (){
+function getSettingGame() {
     setPlayersNumbers(3);
     console.log(`Количетсво игроков: ${playersNumbers}, Минимальный общий вес фракций: ${fractionMinWeight}`);
 
@@ -370,7 +270,7 @@ function getSettingGame (){
     showList(`Удалённые фракции: `, deletedFractions);
     showList(`Оставшиеся фракции: `, nonDeletedFractions);
 
-    getWannaPlayFractions(`Коты`, `Вороны`);
+    //getWannaPlayFractions(`Коты`, `Вороны`);
     showList(`Желаемые фракции: `, wannaPlayFractions);
 
     getFractionListForRandomization();
@@ -383,7 +283,19 @@ function getSettingGame (){
 }
 
 //Рандом игра на N человек
-getRandomGame(4);
+//getRandomGame(4);
+
+//getSettingGame();
+
+// deleteFractions(`Вороны`);
+// showList(`Удалённые фракции: `, deletedFractions);
+// showList(`Оставшиеся фракции: `, nonDeletedFractions);
+
+getFractionListForRandomization();
+showList(`Список фракция для рандомизации: `, fractionListForRandomization);
+
+console.log(calculateCombinations([1,2,3,4], 2));
+
 
 
 
