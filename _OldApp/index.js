@@ -161,94 +161,50 @@ function getFractionListForRandomization() {
     }
 }
 
-//получение сочетаний из массива array размерностью size
-function Combinations(array, size) {
-    let N = array.length;
-
-    function generateCombinations(arr) {
-        if (arr == null) {
-            arr = new Array(size);
-            for (let i = 0; i < size; i++) {
-                arr[i] = i;
-            }
-            return arr;
-        }
-        for (let i = size - 1; i >= 0; i--)
-            if (arr[i] < N - size + i) {
-                arr[i]++;
-                for (let j = i; j < size - 1; j++)
-                    arr[j + 1] = arr[j] + 1;
-                return arr;
-            }
-        return null;
-    }
-
-    let arr = null;
-    let i = 1;
-    let mapOfFractionSet = new Map();
-
-    while ((arr = generateCombinations(arr)) != null) {
-        let result = [];
-        let resultWeight = wannaPlayFractionsWeight;
-
-        arr.forEach(function (key) {
-            result.push(array[key].fullName);
-            resultWeight += array[key].weight
-        });
-
-        //result.push(resultWeight);
-        result = wannaPlayFractions.concat(result);
-
-        if (resultWeight >= fractionMinWeight) {
-            mapOfFractionSet.set(i, result);
-            i++
-        }
-    }
-    return mapOfFractionSet
-}
-
-function calculateCombinations(array, size) {
-    let arr =[];
-    let a;
-    const combination = Combinatorics.combination(array, size);
-    while (a = combination.next()) arr.push(a);
-    return arr
-}
 
 //создадим список с комбинациями фракций
 function getListOfFractionSet() {
-    // создадим массив объектов со свойствами fullName и weight из массива fractionListForRandomization
-    let arr = [];
-    fractionList.forEach(function (fraction) {
-        fractionListForRandomization.forEach(function (key) {
-            if (key === fraction.fullName) {
-                arr.push({
-                    fullName: fraction.fullName,
-                    weight: fraction.weight
-                })
-            }
-        })
+
+    //получение сочетания из массива array размерностью size
+    function calculateCombinations(array, size) {
+        let arr = [];
+        let a;
+        const combination = Combinatorics.combination(array, size);
+        while (a = combination.next()) arr.push(a);
+        return arr
+    }
+
+    let neededPlayersNumber = playersNumbers - wannaPlayFractions.length;   //сколько фракций нужно добрать с учетом количества желаемых фракций
+
+    listOfFractionSet = calculateCombinations(fractionListForRandomization, neededPlayersNumber);   // получим комбинации всевозможных фракций
+
+    listOfFractionSet = listOfFractionSet.filter(fractionSet => {   // отфильтруем варианты фракций по условию веса
+        let fractionSetWeight = wannaPlayFractionsWeight;
+
+        fractionSet.forEach(fraction => {
+            fractionSetWeight += fractionList.find(element => element.fullName === fraction).weight;
+        });
+
+        return (fractionSetWeight >= fractionMinWeight)
     });
 
-    let neededPlayersNumber = playersNumbers - wannaPlayFractions.length; //сколько фракций нужно добрать с учетом количества желаемых фракций
-
-    listOfFractionSet = Combinations(arr, neededPlayersNumber);
+    listOfFractionSet.map(fractionSet => fractionSet.unshift(wannaPlayFractions))
 }
 
 function choiceFractionSet(N) {
-    if (N > listOfFractionSet.size) {
-        console.log(`Не правильный номер набора. Пожалуйста, введите цифру от 1 до ${listOfFractionSet.size}`)
+    if (N > listOfFractionSet.length-1) {
+        console.log(`Не правильный номер набора. Пожалуйста, введите цифру от 0 до ${listOfFractionSet.length-1}`)
     } else {
-        console.log(`Вы выбрали следующий набор фракций: ${listOfFractionSet.get(N).join(', ')}`);
+        console.log(`Вы выбрали следующий набор фракций: ${listOfFractionSet[N].join(', ')}`);
         console.log(`Великий рандом распределил вас следующим образом:`);
-        let arr = shuffle(listOfFractionSet.get(N));
+        let arr = shuffle(listOfFractionSet[N]);
         for (let i = 0; i < playersNumbers; i++) {
             console.log(`Игрок №${i + 1}: фракция "${arr[i]}"`)
         }
     }
-
 }
 
+//Рандомная игра для N человек:
 function getRandomGame(N) {
     setPlayersNumbers(N);
     deletedFractions = []; // фракции, которыми не хотим играть
@@ -270,7 +226,7 @@ function getSettingGame() {
     showList(`Удалённые фракции: `, deletedFractions);
     showList(`Оставшиеся фракции: `, nonDeletedFractions);
 
-    //getWannaPlayFractions(`Коты`, `Вороны`);
+    getWannaPlayFractions(`Коты`, `Вороны`);
     showList(`Желаемые фракции: `, wannaPlayFractions);
 
     getFractionListForRandomization();
@@ -279,22 +235,15 @@ function getSettingGame() {
     getListOfFractionSet();
     showList(`Выберите набор фракций: `, Array.from(listOfFractionSet.entries()));
 
-    choiceFractionSet(20)
+    choiceFractionSet(13)
 }
 
-//Рандом игра на N человек
-//getRandomGame(4);
-
 //getSettingGame();
+getRandomGame(5)
 
-// deleteFractions(`Вороны`);
-// showList(`Удалённые фракции: `, deletedFractions);
-// showList(`Оставшиеся фракции: `, nonDeletedFractions);
 
-getFractionListForRandomization();
-showList(`Список фракция для рандомизации: `, fractionListForRandomization);
 
-console.log(calculateCombinations([1,2,3,4], 2));
+
 
 
 
