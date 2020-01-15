@@ -9,26 +9,27 @@ function SetPlayersNumber() {
 
     return (
         <div>
-            Введите количестов игроков: {}
-            <input id="playersNumber" type="number" min="2" max="6"/>
+            Введите количестов игроков (от 2 до 6): {}
+            <input defaultValue={2} id="playersNumber" type="number" min="2" max="6"/>
 
             <button onClick={() => {
                 let inputValue = document.getElementById('playersNumber').value;
                 document.getElementById('playersNumber').value = "";
-                setIsShow(true);
 
                 if (2 <= inputValue && inputValue <= 6) {
                     setPlayersNumber(inputValue);
-                    setText("Количество игроков: " + playersNumber)
+                    setText("Количество игроков: " + inputValue)
                 } else {
-                    setPlayersNumber(inputValue);
+                    //setPlayersNumber(0);
                     setText("Неверный ввод")
                 }
+
+                setIsShow(true);
             }}>
                 ОК
             </button>
             <p style={{display: isShow ? "block" : "none"}}>{text}</p>
-            <p>{playersNumber}</p>
+            {console.log (playersNumber)}
         </div>
     );
 }
