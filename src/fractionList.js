@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-const FractionList = {
+const List =  {
     'коты': {
         fullName: `Маркиза де Коте`,
         name: 'Коты',
@@ -26,26 +26,28 @@ const FractionList = {
         name: 'Выдры',
         weight: 5
     },
-    'Мыши': {
+    'мыши': {
         fullName: `Лесной союз`,
         name: 'Мыши',
         weight: 3
     },
-    'Вороны': {
+    'вороны': {
         fullName: `Вороний заговор`,
         name: 'Вороны',
         weight: 3
     },
-    'Енот 2': {
+    'енот 2': {
         fullName: `Бродяга (второй)`,
         name: 'Енот 2',
         weight: 2
     },
-    'Ящерицы': {
+    'ящерицы': {
         fullName: `Культ пресмыкающихся`,
         name: 'Ящерицы',
         weight: 2
     },
 };
+
+const FractionList = new Map(Object.entries(List));
 
 export default FractionList

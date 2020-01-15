@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import FractionList from "../../fractionList";
 
 
-function Fraction(fraction) {
+function Fraction(props) {
     return (
-        <>{FractionList.get(fraction).fullName}</>
+        <p>{FractionList.get(props.fractionName).fullName}</p>
     )
 }
 
