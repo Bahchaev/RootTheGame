@@ -8,7 +8,7 @@ function ShowFractionList() {
     return (
         <ul>
             Список фракций:
-            {Array.from(FractionList.keys()).map((element) => <li><Fraction fractionName = {element}/></li>)}
+            {Array.from(FractionList.values()).map((element) => <li>{element.fullName}</li>)}
 
         </ul>
     )

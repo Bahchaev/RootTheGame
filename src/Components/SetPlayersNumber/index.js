@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styles from './styles.module.css';
 
+
 function SetPlayersNumber() {
 
     const [playersNumber, setPlayersNumber] = useState(2);
@@ -25,6 +26,7 @@ function SetPlayersNumber() {
                 }
 
                 setIsShow(true);
+
             }}>
                 ОК
             </button>

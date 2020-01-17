@@ -4,7 +4,7 @@ import FractionList from "../../fractionList";
 
 function Fraction(props) {
     return (
-        <p>{FractionList.get(props.fractionName).fullName}</p>
+        <>{FractionList.get(props.fractionName).fullName}</>
     )
 }
 
