@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import styles from './styles.module.css';
 
 
 function SetPlayersNumber() {
@@ -31,7 +30,6 @@ function SetPlayersNumber() {
                 ОК
             </button>
             <p style={{display: isShow ? "block" : "none"}}>{text}</p>
-            {console.log (playersNumber)}
         </div>
     );
 }

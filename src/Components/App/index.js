@@ -1,20 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import styles from './styles.module.css';
 import SetPlayersNumber from "../SetPlayersNumber";
-import ShowFractionList from "../ShowFractionList";
-import GetWannaPlayFractionList from "../EnterWannaPlayFractionList";
+import ShowList from "../ShowList";
+import FractionList from "../../fractionList";
+import FractionConfig from "../FractionConfig";
 
 function App() {
-    const wannaPlayFractions = new Map();
     return (
         <>
-        <SetPlayersNumber/>
-        <ShowFractionList/>
-        <GetWannaPlayFractionList/>
+            <ShowList text={"Список фракций:"} listName={Array.from(FractionList.keys())}/>
+            <SetPlayersNumber/>
+            <p></p>
+            <FractionConfig/>
         </>
     )
-
-
 }
 
 export default App;
