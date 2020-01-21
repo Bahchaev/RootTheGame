@@ -1,5 +1,3 @@
-import React, {useEffect, useState} from 'react';
-
 const FractionList = new Map();
 FractionList.set('Маркиза де Коте', 10)
     .set(`Подземное герцогство`, 8)

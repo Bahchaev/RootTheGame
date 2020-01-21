@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import SetPlayersNumber from "../SetPlayersNumber";
-import ShowList from "../ShowList";
-import FractionList from "../../fractionList";
-import FractionConfig from "../FractionConfig";
+// import ShowList from "../ShowList";
+// import FractionList from "../../fractionList";
+// import FractionConfig from "../FractionConfig";
 
 function App() {
     return (
         <>
-            <ShowList text={"Список фракций:"} listName={Array.from(FractionList.keys())}/>
+            {/*<ShowList text={"Список фракций:"} listName={Array.from(FractionList.keys())}/>*/}
             <SetPlayersNumber/>
             <p></p>
-            <FractionConfig/>
+
         </>
     )
 }

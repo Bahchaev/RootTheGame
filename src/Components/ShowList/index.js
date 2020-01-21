@@ -7,7 +7,7 @@ function ShowList(props) {
     return (
         <ul>
             {text}
-            {listName.map((element) => <li>{element}</li>)}
+            {listName.map((element) => <li key={element}>{element}</li>)}
         </ul>
     )
 
