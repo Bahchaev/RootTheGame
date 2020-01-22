@@ -1,13 +1,41 @@
 import React from 'react';
 import FractionList from "../../fractionList";
+import ShowList from "../ShowList";
 
 function FractionConfig(props) {
     let playersNumber = props.playersNumber;
     let isShow = props.isShow;
 
-
+//TODO: перенести в отдельный компонент calculateGame
     const calculateGame = () => {
-        console.log("Посчитали игру для " + playersNumber + " игроков")
+
+        let randomFractionList = [],
+            wannaPlayList = [],
+            dontWannaPlayList = [];
+
+
+        console.log("Посчитали игру для " + playersNumber + " игроков");
+
+        Array.from(FractionList.keys()).map((fraction) => {
+                if (document.getElementsByName(fraction)[0].checked) {
+                    randomFractionList.push(fraction)
+                } else if (document.getElementsByName(fraction)[1].checked) {
+                    wannaPlayList.push(fraction)
+                }
+                dontWannaPlayList.push(fraction)
+            }
+        );
+
+        console.log("рандом: " + randomFractionList);
+        console.log("желаемое: " + wannaPlayList);
+        console.log("не желаемое: " + wannaPlayList);
+        return (
+            <>
+                <ShowList text={"Рандом: "} listName={randomFractionList}/>
+                <ShowList text={"Желаемое: "} listName={wannaPlayList}/>
+                <ShowList text={"Нежулаемое: "} listName={dontWannaPlayList}/>
+            </>
+        )
     };
 
     const showSetVariants = () => {
@@ -18,7 +46,7 @@ function FractionConfig(props) {
         <div style={{display: isShow ? "block" : "none"}}>
             <p></p>
             Укажите фракции, которыми вы хотите играть или НЕ хотите играть:
-            <table>
+            <table id="fractionTable">
                 <tbody>
                 <tr>
                     <td align="center" bgcolor={"Silver"}>Фракция</td>
@@ -50,6 +78,6 @@ function FractionConfig(props) {
             <button onClick={showSetVariants}>Посмотреть варианты</button>
         </div>
     )
-}
+};
 
 export default FractionConfig
