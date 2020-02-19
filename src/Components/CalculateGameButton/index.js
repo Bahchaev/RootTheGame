@@ -1,46 +1,65 @@
 import FractionList from "../../fractionList";
 import ShowList from "../ShowList";
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
+import PlayersContext from "../SetPlayersNumber/context";
+import SetPlayersNumber from "../SetPlayersNumber";
+import Result from "../Result";
 
 function CalculateGameButton() {
-    const playersNumber = useContext(PlayersNumberContext);
+    const [randomFractionList, setRandomFractionList] = useState([]);
+    const [wannaPlayList, setWannaPlayList] = useState([]);
+    const [dontWannaPlayList, setDontWannaPlayList] = useState([]);
+
+    const players = 2;
+
     const calculate = () => {
 
-        let randomFractionList = [],
-            wannaPlayList = [],
-            dontWannaPlayList = [];
+        const randomFractionArr = [],
+            wannaPlayArr = [],
+            dontWannaPlayArr = [];
 
-
-
-        console.log("Посчитали игру для " + playersNumber + " игроков");
 
         Array.from(FractionList.keys()).map((fraction) => {
                 if (document.getElementsByName(fraction)[0].checked) {
-                    randomFractionList.push(fraction)
+                    randomFractionArr.push(fraction)
                 } else if (document.getElementsByName(fraction)[1].checked) {
-                    wannaPlayList.push(fraction)
-                }
-                dontWannaPlayList.push(fraction)
+                    wannaPlayArr.push(fraction)
+                } else
+                    dontWannaPlayArr.push(fraction)
             }
         );
 
-        console.log("рандом: " + randomFractionList);
-        console.log("желаемое: " + wannaPlayList);
-        console.log("не желаемое: " + wannaPlayList);
+        console.log("Посчитали игру для " + players + " игроков");
+        console.log("рандом: " + randomFractionArr);
+        console.log("желаемое: " + wannaPlayArr);
+        console.log("не желаемое: " + dontWannaPlayArr);
+
+        setRandomFractionList(randomFractionArr);
+        setWannaPlayList(wannaPlayArr);
+        setDontWannaPlayList(dontWannaPlayArr);
     };
 
+    const isShow = () => {
+        if ((randomFractionList.length + wannaPlayList.length + wannaPlayList.length) !== 0) {
+            return "block"
+        }
+        return "none"
+    };
 
+    console.log(isShow());
 
     return (
         <>
             <button onClick={calculate}>Посчитать игру</button>
-            <ShowList text={"Рандом: "} listName={randomFractionList}/>
-            <ShowList text={"Желаемое: "} listName={wannaPlayList}/>
-            <ShowList text={"Нежулаемое: "} listName={dontWannaPlayList}/>
+            <Result
+                style={{display: isShow()}}
+                randomFractionList={randomFractionList}
+                wannaPlayList={wannaPlayList}
+                dontWannaPlayList={dontWannaPlayList}
+            />
         </>
     )
 }
-
 
 export default CalculateGameButton;
 

@@ -4,11 +4,6 @@ import ShowList from "../ShowList";
 import SetPlayersNumber from "../SetPlayersNumber";
 
 function FractionConfig(props) {
-
-    const showSetVariants = () => {
-        console.log("Показали варианты наборов фракций")
-    };
-
     return (
         <div>
             <p></p>
@@ -41,7 +36,6 @@ function FractionConfig(props) {
                 )}
                 </tbody>
             </table>
-            <button onClick={showSetVariants}>Посмотреть варианты</button>
         </div>
     )
 }

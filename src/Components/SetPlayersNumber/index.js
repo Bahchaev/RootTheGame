@@ -1,14 +1,11 @@
 import React, {useState} from 'react';
-import FractionConfig from "../FractionConfig";
 import CalculateGameButton from "../CalculateGameButton";
+import PlayersContext from "./context";
 
-const PlayersNumberContext = React.createContext(2);
-
-function SetPlayersNumber() {
+function SetPlayersNumber(defaultValue, calculateChangedBits) {
 
     const [playersNumber, setPlayersNumber] = useState(2);
     const [text, setText] = useState("Количество игроков: " + playersNumber);
-
 
 
     let onClick = () => {
@@ -22,15 +19,14 @@ function SetPlayersNumber() {
             setText("Неверный ввод")
         }
 
-
         input.value = "";  //опустошили строку ввода
     };
 
     return (
         <div>
-            <PlayersNumberContext.Provider value={playersNumber}>
+            <PlayersContext.Provider value={playersNumber}>
                 <CalculateGameButton/>
-            </PlayersNumberContext.Provider>
+            </PlayersContext.Provider>
 
             <p>
                 Введите количестов игроков (от 2 до 6): {}

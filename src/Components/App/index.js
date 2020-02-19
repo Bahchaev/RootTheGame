@@ -7,8 +7,6 @@ import CalculateGameButton from "../CalculateGameButton";
 
 function App() {
 
-
-
     return (
         <>
             {/*<ShowList text={"Список фракций:"} listName={Array.from(FractionList.keys())}/>*/}
