@@ -1,23 +1,20 @@
-import FractionList from "../../fractionList";
-import ShowList from "../ShowList";
-import React, {useContext, useState} from "react";
-import PlayersContext from "../SetPlayersNumber/context";
-import SetPlayersNumber from "../SetPlayersNumber";
+import FractionList from "../../FractionList";
+import React, {useState} from "react";
 import Result from "../Result";
+const Combinatorics = require('js-combinatorics');
 
-function CalculateGameButton() {
+function CalculateGameButton(props) {
     const [randomFractionList, setRandomFractionList] = useState([]);
     const [wannaPlayList, setWannaPlayList] = useState([]);
     const [dontWannaPlayList, setDontWannaPlayList] = useState([]);
 
-    const players = 2;
+    const playersNumber = props.playersNumber;
 
-    const calculate = () => {
+    function calculate() {
 
         const randomFractionArr = [],
             wannaPlayArr = [],
             dontWannaPlayArr = [];
-
 
         Array.from(FractionList.keys()).map((fraction) => {
                 if (document.getElementsByName(fraction)[0].checked) {
@@ -29,15 +26,12 @@ function CalculateGameButton() {
             }
         );
 
-        console.log("Посчитали игру для " + players + " игроков");
-        console.log("рандом: " + randomFractionArr);
-        console.log("желаемое: " + wannaPlayArr);
-        console.log("не желаемое: " + dontWannaPlayArr);
-
         setRandomFractionList(randomFractionArr);
         setWannaPlayList(wannaPlayArr);
         setDontWannaPlayList(dontWannaPlayArr);
-    };
+
+        console.log("Посчитали игру для " + playersNumber + " игроков");
+    }
 
     const isShow = () => {
         if ((randomFractionList.length + wannaPlayList.length + wannaPlayList.length) !== 0) {
@@ -46,13 +40,11 @@ function CalculateGameButton() {
         return "none"
     };
 
-    console.log(isShow());
-
     return (
         <>
             <button onClick={calculate}>Посчитать игру</button>
             <Result
-                style={{display: isShow()}}
+                isShow={isShow()}
                 randomFractionList={randomFractionList}
                 wannaPlayList={wannaPlayList}
                 dontWannaPlayList={dontWannaPlayList}

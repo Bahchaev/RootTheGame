@@ -1,13 +1,11 @@
 import React from 'react';
-import FractionList from "../../fractionList";
-import ShowList from "../ShowList";
-import SetPlayersNumber from "../SetPlayersNumber";
+import FractionList from "../../FractionList";
+import CalculateGameButton from "../CalculateGameButton";
 
 function FractionConfig(props) {
     return (
         <div>
-            <p></p>
-            Укажите фракции, которыми вы хотите играть или НЕ хотите играть:
+            <p>Укажите фракции, которыми вы хотите играть или НЕ хотите играть:</p>
             <table id="fractionTable">
                 <tbody>
                 <tr>
@@ -36,7 +34,12 @@ function FractionConfig(props) {
                 )}
                 </tbody>
             </table>
+
+            <CalculateGameButton
+                playersNumber={props.playersNumber}
+            />
         </div>
     )
 }
+
 export default FractionConfig

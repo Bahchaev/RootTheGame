@@ -8,19 +8,25 @@ function Result(props) {
     const dontWannaPlayList = props.dontWannaPlayList;
 
     return (
-        <table style={{width: "500px"}}>
-            <tr style={{verticalAlign: "top"}}>
-                <td style={{width: "33%"}}>
-                    <ShowList text={"Рандом:"} listName={randomFractionList}/>
-                </td>
-                <td style={{width: "33%"}}>
-                    <ShowList text={"Желаемое:"} listName={wannaPlayList}/>
-                </td>
-                <td style={{width: "33%"}}>
-                    <ShowList text={"Не желаемое:"} listName={dontWannaPlayList}/>
-                </td>
-            </tr>
-        </table>
+        <div style={{display: props.isShow}}>
+            <table style={{width: "800px"}}>
+                <tbody>
+                <tr style={{verticalAlign: "top"}}>
+                    <td style={{width: "33%"}}>
+                        <ShowList text={"Рандом:"} listName={randomFractionList}/>
+                    </td>
+                    <td style={{width: "33%"}}>
+                        <ShowList text={"Желаемое:"} listName={wannaPlayList}/>
+                    </td>
+                    <td style={{width: "33%"}}>
+                        <ShowList text={"Не желаемое:"} listName={dontWannaPlayList}/>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
     )
 }
 
