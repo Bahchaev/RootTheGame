@@ -1,6 +1,5 @@
 import React from 'react';
 import FractionList from "../../FractionList";
-import CalculateGameButton from "../CalculateGameButton";
 
 function FractionConfig(props) {
     return (
@@ -34,11 +33,8 @@ function FractionConfig(props) {
                 )}
                 </tbody>
             </table>
-
-            <CalculateGameButton
-                playersNumber={props.playersNumber}
-            />
         </div>
+
     )
 }
 

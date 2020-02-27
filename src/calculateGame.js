@@ -1,14 +1,11 @@
-import FractionList from "../../FractionList";
 import React, {useState} from "react";
-import Result from "../Result";
-const Combinatorics = require('js-combinatorics');
+import FractionList from "./FractionList";
 
-function CalculateGameButton(props) {
+function calculateGame() {
+
     const [randomFractionList, setRandomFractionList] = useState([]);
     const [wannaPlayList, setWannaPlayList] = useState([]);
     const [dontWannaPlayList, setDontWannaPlayList] = useState([]);
-
-    const playersNumber = props.playersNumber;
 
     function calculate() {
 
@@ -29,29 +26,13 @@ function CalculateGameButton(props) {
         setRandomFractionList(randomFractionArr);
         setWannaPlayList(wannaPlayArr);
         setDontWannaPlayList(dontWannaPlayArr);
-
-        console.log("Посчитали игру для " + playersNumber + " игроков");
     }
 
-    const isShow = () => {
-        if ((randomFractionList.length + wannaPlayList.length + wannaPlayList.length) !== 0) {
-            return "block"
-        }
-        return "none"
-    };
+    calculate();
 
     return (
-        <>
-            <button onClick={calculate}>Посчитать игру</button>
-            <Result
-                isShow={isShow()}
-                randomFractionList={randomFractionList}
-                wannaPlayList={wannaPlayList}
-                dontWannaPlayList={dontWannaPlayList}
-            />
-        </>
+        [randomFractionList, wannaPlayList, dontWannaPlayList]
     )
 }
 
-export default CalculateGameButton;
-
+calculateGame();
