@@ -1,6 +1,10 @@
 import React from 'react';
 import SetPlayersNumber from "../SetPlayersNumber";
-import GameCalculationButton from "../GameCalculationButton";
+import FractionConfig from "../FractionConfig";
+import GetRandomFractionSetButton from "../GetRandomFractionSetButton";
+import ShowFractionSetListButton from "../ShowFractionSetList";
+import CalculateGameButton from "../CalculateGameButton";
+
 
 function App() {
 
@@ -8,7 +12,10 @@ function App() {
         <>
             {/*<ShowList text={"Список фракций:"} listName={Array.from(FractionList.keys())}/>*/}
             <SetPlayersNumber/>
-            <GameCalculationButton/>
+            <FractionConfig/>
+            <GetRandomFractionSetButton/>
+            <ShowFractionSetListButton/>
+            <CalculateGameButton/>
 
         </>
     )

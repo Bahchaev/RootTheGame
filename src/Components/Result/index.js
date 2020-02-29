@@ -6,10 +6,12 @@ function Result(props) {
     const randomFractionList = props.randomFractionList;
     const wannaPlayList = props.wannaPlayList;
     const dontWannaPlayList = props.dontWannaPlayList;
+    const text = props.text;
 
     return (
-        <div style={{display: props.isShow}}>
-            <table style={{width: "800px"}}>
+        <div>
+            <p>{text}</p>
+            <table style={{width: "800px", display: props.tableIsShow}}>
                 <tbody>
                 <tr style={{verticalAlign: "top"}}>
                     <td style={{width: "33%"}}>

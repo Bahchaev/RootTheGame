@@ -4,7 +4,7 @@ import FractionList from "../../FractionList";
 function FractionConfig(props) {
     return (
         <div>
-            <p>Укажите фракции, которыми вы хотите играть или НЕ хотите играть:</p>
+            <p>Укажите фракции, которыми вы ХОТИТЕ играть или НЕ ХОТИТЕ играть:</p>
             <table id="fractionTable">
                 <tbody>
                 <tr>
@@ -34,7 +34,6 @@ function FractionConfig(props) {
                 </tbody>
             </table>
         </div>
-
     )
 }
 
